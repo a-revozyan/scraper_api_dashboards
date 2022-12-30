@@ -1,0 +1,6 @@
+env
+.idea
+__pycache__
+api/aws/credentials
+scrape/aws/credentials
+viz/aws/credentials
