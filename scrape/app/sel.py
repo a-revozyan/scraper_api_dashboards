@@ -7,7 +7,6 @@ from dicts import car_months, car_colors, car_status, car_owner, car_transmissio
 from vars import *
 
 
-OLX_MAIN_LIST = []      # this list is used for collecting urls of ads of https://olx.uz
 AVTOELON_MAIN_LIST = [] # this list is used for collecting urls of ads of https://avtoelon.uz
 OLX_LIST = []           # this list is used for collecting temp dict which is build based on elements of the OLX_MAIN_LIST
 AVTOELON_LIST = []      # this list is used for collecting temp dict which is build based on elements of the AVTOELON_MAIN_LIST
@@ -20,8 +19,8 @@ class Sel:
     def __init__(self, path):
         """Initialization selenium instance"""
         self.options = webdriver.ChromeOptions()
-        self.options.add_experimental_option("detach", True)
-        # self.options.add_argument("--headless")
+        self.options.add_experimental_option("detach", False)
+        self.options.add_argument("--headless")
         self.options.add_argument("--disable-gpu")
         self.options.add_argument("--no-sandbox")
         self.options.add_argument('--disable-dev-shm-usage')
@@ -41,12 +40,12 @@ class Sel:
         """Collecting the biggest number of pages of the default page 'olx.uz', using as last number of 'counts' var"""
         self.driver.get(url)
         self.driver.implicitly_wait(15)                                  # waiting till url is loading                                         # if avtoelon.uz in url
-        self.counts = int(1)
-        # try:
-        #     self.counts = self.driver.find_element(By.XPATH, xpath) # getting the last number of pages
-        #     self.counts = int(self.counts.text)                     # this variable is used in for loop in app.py
-        # except NoSuchElementException:
-        #     self.counts = int(5)                                    # if less than 10 pages, selecting just 5 pages
+        # self.counts = int(1)
+        try:
+            self.counts = self.driver.find_element(By.XPATH, xpath) # getting the last number of pages
+            self.counts = int(self.counts.text)                     # this variable is used in for loop in app.py
+        except NoSuchElementException:
+            self.counts = int(5)                                    # if less than 10 pages, selecting just 5 pages
 
     def get_urls(self, url):
         """Collecting all 'hrefs' from each page, adding these hrefs to the 'MAIN_LIST', which will be used for the next parsing"""
@@ -71,7 +70,7 @@ class Sel:
             if 'позиция' in self.model:
                 self.model = self.model.replace('позиция', 'position')
             elif 'евро' in self.model:
-                self.model = self.model.replace('евро позиция', 'euro position')
+                self.model = self.model.replace('евро', 'euro')
             count = 1
             list_of_text = []
             while True:
@@ -118,7 +117,6 @@ class Sel:
                 "odo": f"{self.odo}",
                 "url": f"{url}"
             }
-            print(temp)
 
             AVTOELON_LIST.append(temp)
         except:

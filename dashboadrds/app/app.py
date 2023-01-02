@@ -48,7 +48,7 @@ app.layout = html.Div(
                                 {"label": model, "value": model}
                                 for model in np.sort(data_price.model.unique())
                             ],
-                            value="Chevrolet Nexia",
+                            # value="Chevrolet Nexia",
                             clearable=False,
                             className="dropdown",
                         ),
@@ -56,12 +56,12 @@ app.layout = html.Div(
                 ),
                 html.Div(
                     children=[
-                        html.Div(children="Status", className="menu-title"),
+                        html.Div(children="Color", className="menu-title"),
                         dcc.Dropdown(
-                            id="status-filter",
+                            id="color-filter",
                             options=[
-                                {"label": car_status, "value": car_status}
-                                for car_status in data_price.status.unique()
+                                {"label": car_color, "value": car_color}
+                                for car_color in data_price.color.unique()
                             ],
                             value="excellent",
                             clearable=False,
@@ -113,15 +113,15 @@ app.layout = html.Div(
     [Output("price-chart", "figure"), Output("volume-chart", "figure")],
     [
         Input("model-filter", "value"),
-        Input("status-filter", "value"),
+        Input("color-filter", "value"),
         Input("date-range", "start_date"),
         Input("date-range", "end_date"),
     ],
 )
-def update_charts(model_car, car_status, start_date, end_date):
+def update_charts(model_car, car_color, start_date, end_date):
     mask = (
         (data_price.model == model_car)
-        & (data_price.status == car_status)
+        & (data_price.color == car_color)
         & (data_price.year >= start_date)
         & (data_price.year <= end_date)
     )
