@@ -6,11 +6,7 @@ WORKDIR /srv/app
 RUN apt -y update && \
     pip install --upgrade pip && \
     apt install unzip -y && \
-    pip install awscliv2 && \
-    pip install -r /srv/app/requirements.txt && \
-    mkdir -p /root/.aws
-
-COPY aws/credentials /root/.aws
+    pip install -r /srv/app/requirements.txt
 
 # Install chromedriver
 RUN wget -N https://chromedriver.storage.googleapis.com/107.0.5304.62/chromedriver_linux64.zip -P ~/ && \

@@ -4,7 +4,7 @@ DOLLAR = 11550  # Rate Uzb/USD
 BRAND = ['byd', 'kia', 'toyota', 'chevrolet', 'hyundai']   # Based on the list, selecting the brand of automobiles
 AVTOELON = 'avtoelon.uz'                       # source, using in if statement
 CSV_LIST = ['model', 'date', 'price', 'owner', 'year', 'color', 'transmission', 'odo', 'url'] # the list is used for creating csv files
-CRAWLER_BUCKET = 'datacollectbucketcrawler1' # bucket for collecting data
+CRAWLER_BUCKET = 'carsdatascraperapidash1' # bucket for collecting data
 DRIVER_PATH = '/usr/local/bin/chromedriver'
 
 # Variables for avtoelon.uz
