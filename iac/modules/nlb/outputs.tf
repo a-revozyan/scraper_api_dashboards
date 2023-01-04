@@ -5,10 +5,10 @@ output "nlb_address" {
 
 output "target_group" {
   description = "target_group"
-  value       = aws_lb_target_group.nlb_tg.arn
+  value       = aws_lb_target_group.nlb_tg_api.arn
 }
 
 output "target_group2" {
   description = "target_group2"
-  value       = aws_lb_target_group.nlb_tg2.arn
+  value       = aws_lb_target_group.nlb_tg_dash.arn
 }

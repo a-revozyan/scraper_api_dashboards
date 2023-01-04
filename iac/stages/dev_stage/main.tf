@@ -35,7 +35,7 @@ module "ecr" {
 module "sgs" {
   source = "../../modules/sgs"
   vpc_id = module.vpc.vpc_id
-  env    = "devstage"
+  env    = var.stage
 }
 
 module "ecs" {
@@ -55,7 +55,7 @@ module "ecs" {
   dash01_security_group   = module.sgs.dash_sg_5000
   target_group            = module.nlb.target_group
   target_group2           = module.nlb.target_group2
-  env                     = "devstage"
+  env                     = var.stage
 }
 
 module "nlb" {
@@ -63,6 +63,6 @@ module "nlb" {
   source                = "../../modules/nlb/"
   vpc_id                = module.vpc.vpc_id
   frontend_subnet_ids   = module.vpc.frontend-subnet_ids
-  ecs_api01_service_id  = module.ecs.api01_service_id
-  env                   = "devstage"
+#  ecs_api01_service_id  = module.ecs.api01_service_id
+  env                   = var.stage
 }

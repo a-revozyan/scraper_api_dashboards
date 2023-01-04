@@ -72,3 +72,68 @@ variable "target_group2" {
   description = "target_group2"
   type        = string
 }
+
+variable "awsvpc_mode" {
+  description = "awsvpc_mode"
+  default     = "awsvpc"
+}
+
+variable "scraper01_service" {
+  description = "for names, etc"
+  default     = "scraper01_service"
+}
+
+variable "scraper_memory" {
+  description = "scraper_memory"
+  default     = "2048"
+}
+
+variable "scraper_cpu" {
+  description = "scraper_cpu"
+  default     = "1024"
+}
+
+variable "api01_service" {
+  description = "for names, etc"
+  default     = "api01_service"
+}
+
+variable "api01_service_port" {
+  description = "api01_service_port"
+  default     = "5050"
+}
+
+variable "api_memory" {
+  description = "scraper_memory"
+  default     = "2048"
+}
+
+variable "api_cpu" {
+  description = "scraper_cpu"
+  default     = "1024"
+}
+
+variable "dash01_service" {
+  description = "for names, etc"
+  default     = "dash01_service"
+}
+
+variable "dash01_service_port" {
+  description = "for names, etc"
+  default     = "80"
+}
+
+variable "dash_memory" {
+  description = "scraper_memory"
+  default     = "2048"
+}
+
+variable "dash_cpu" {
+  description = "scraper_cpu"
+  default     = "1024"
+}
+
+variable "launch_type" {
+  description = "scraper_cpu"
+  default     = "FARGATE"
+}

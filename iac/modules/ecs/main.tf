@@ -6,26 +6,26 @@ resource "aws_ecs_cluster" "scraperapidash01" {
 }
 
 resource "aws_ecs_service" "scraper01_service" {
-  name            = "scraper01_service"
+  name            = var.scraper01_service
   cluster         = aws_ecs_cluster.scraperapidash01.id
   task_definition = aws_ecs_task_definition.scraper01_task_definition.arn
-  launch_type     = "FARGATE"
+  launch_type     = var.launch_type
   network_configuration {
     subnets          = [var.backend_subnet]
     assign_public_ip = true
   }
   desired_count = 1
   tags = {
-    Name = "${var.env}-scraper01_service"
+    Name = "${var.env}-${var.scraper01_service}"
   }
 }
 
 resource "aws_ecs_task_definition" "scraper01_task_definition" {
-  family                   = "scraper01_task_definition"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  memory                   = "2048"
-  cpu                      = "1024"
+  family                   = "${var.scraper01_service}_task_definition"
+  network_mode             = var.awsvpc_mode
+  requires_compatibilities = [var.launch_type]
+  memory                   = var.scraper_memory
+  cpu                      = var.scraper_cpu
   task_role_arn            = var.ecs_app_task_role
   execution_role_arn       = var.ecs_app_execution_role
   container_definitions    = <<EOF
@@ -52,33 +52,32 @@ EOF
 }
 
 resource "aws_ecs_service" "api01_service" {
-  name            = "api01_service"
+  name            = var.api01_service
   cluster         = aws_ecs_cluster.scraperapidash01.id
   task_definition = aws_ecs_task_definition.api01_task_definition.arn
-  launch_type     = "FARGATE"
+  launch_type     = var.launch_type
   load_balancer {
     container_name = "api01_container"
-    container_port = 5050
+    container_port = var.api01_service_port
     target_group_arn = var.target_group
   }
   network_configuration {
     security_groups  = ["${var.api01_security_group}"]
     subnets          = [var.backend_subnet]
-#    subnets          = var.frontend_subnets
     assign_public_ip = false
   }
   desired_count = 1
   tags = {
-    Name = "${var.env}-api01_service"
+    Name = "${var.env}-${var.api01_service}"
   }
 }
 
 resource "aws_ecs_task_definition" "api01_task_definition" {
-  family                   = "api01_task_definition"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  memory                   = "2048"
-  cpu                      = "1024"
+  family                   = "${var.api01_service}_task_definition"
+  network_mode             = var.awsvpc_mode
+  requires_compatibilities = [var.launch_type]
+  memory                   = var.api_memory
+  cpu                      = var.api_cpu
   task_role_arn            = var.ecs_app_task_role
   execution_role_arn       = var.ecs_app_execution_role
   container_definitions    = <<EOF
@@ -111,33 +110,32 @@ EOF
 }
 
 resource "aws_ecs_service" "dash01_service" {
-  name            = "dash01_service"
+  name            = var.dash01_service
   cluster         = aws_ecs_cluster.scraperapidash01.id
   task_definition = aws_ecs_task_definition.dash01_task_definition.arn
-  launch_type     = "FARGATE"
+  launch_type     = var.launch_type
   load_balancer {
     container_name = "dash01_service"
-    container_port = 80
+    container_port = var.dash01_service_port
     target_group_arn = var.target_group2
   }
   network_configuration {
     security_groups  = ["${var.dash01_security_group}"]
     subnets          = [var.backend_subnet]
-#    subnets          = var.frontend_subnets
     assign_public_ip = false
   }
   desired_count = 1
   tags = {
-    Name = "${var.env}-dash01_service"
+    Name = "${var.env}-${var.dash01_service}"
   }
 }
 
 resource "aws_ecs_task_definition" "dash01_task_definition" {
-  family                   = "dash01_task_definition"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  memory                   = "2048"
-  cpu                      = "1024"
+  family                   = "${var.dash01_service}_task_definition"
+  network_mode             = var.awsvpc_mode
+  requires_compatibilities = [var.launch_type]
+  memory                   = var.dash_memory
+  cpu                      = var.dash_cpu
   task_role_arn            = var.ecs_app_task_role
   execution_role_arn       = var.ecs_app_execution_role
   container_definitions    = <<EOF

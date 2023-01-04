@@ -13,7 +13,22 @@ variable "frontend_subnet_ids" {
   type        = list(string)
 }
 
-variable "ecs_api01_service_id" {
-  description = "frontend subnet ids"
-  type        = string
+variable "api_port_target_group" {
+  description = "api_port_target_group"
+  default     = "5050"
+}
+
+variable "dash_port_target_group" {
+  description = "dash_port_target_group"
+  default     = "80"
+}
+
+variable "tcp" {
+  description = "layer 4"
+  default     = "TCP"
+}
+
+variable "target_type" {
+  description = "target_type"
+  default     = "ip"
 }

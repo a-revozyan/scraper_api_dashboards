@@ -12,10 +12,3 @@ data "aws_ecr_image" "dash_image_url" {
   repository_name = var.dash_repository_name
   image_tag       = "latest"
 }
-
-#data "aws_vpc" "vpcid" {
-#  filter {
-#    name   = "tag:Name"
-#    values = ["${var.env}-vpc"]
-#  }
-#}

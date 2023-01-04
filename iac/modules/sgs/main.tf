@@ -1,21 +1,20 @@
 resource "aws_security_group" "sg_api01_service" {
-  name = "allow 5050 for api01 service"
-  description = "allow 5050 for api01 service"
+  name = "allow ${var.api_port_sec_group} for api01 service"
+  description = "allow ${var.api_port_sec_group} for api01 service"
   vpc_id = var.vpc_id
     ingress {
-    description      = "TLS from VPC"
-    from_port        = 5050
-    to_port          = 5050
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    description      = "${var.api_port_sec_group} from VPC"
+    from_port        = var.api_port_sec_group
+    to_port          = var.api_port_sec_group
+    protocol         = var.tcp
+    cidr_blocks      = [var.cidr_block]
   }
 
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    from_port        = var.egress_port
+    to_port          = var.egress_port
+    protocol         = var.protocol_egress
+    cidr_blocks      = [var.cidr_block]
   }
 
   tags = {
@@ -24,23 +23,22 @@ resource "aws_security_group" "sg_api01_service" {
 }
 
 resource "aws_security_group" "sg_dash01_service" {
-  name = "allow 5000 for dash01 service"
-  description = "allow 5000 for dash01 service"
+  name = "allow ${var.dash_port_sec_group} for dash01 service"
+  description = "allow ${var.dash_port_sec_group} for dash01 service"
   vpc_id = var.vpc_id
     ingress {
-    description      = "TLS from VPC"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    description      = "${var.dash_port_sec_group} from VPC"
+    from_port        = var.dash_port_sec_group
+    to_port          = var.dash_port_sec_group
+    protocol         = var.tcp
+    cidr_blocks      = [var.cidr_block]
   }
 
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
+    from_port        = var.egress_port
+    to_port          = var.egress_port
+    protocol         = var.protocol_egress
+    cidr_blocks      = [var.cidr_block]
   }
 
   tags = {

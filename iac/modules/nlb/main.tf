@@ -9,67 +9,66 @@ resource "aws_lb" "nlb" {
   }
 }
 
-resource "aws_lb_target_group" "nlb_tg" {
+resource "aws_lb_target_group" "nlb_tg_api" {
   depends_on  = [
     aws_lb.nlb
   ]
   lifecycle {
     create_before_destroy = true
   }
-  name        = "nlb1-${var.env}-tg"
-  port        = 5050
-  protocol    = "TCP"
+  name        = "nlb-${var.env}-tg-api"
+  port        = var.api_port_target_group
+  protocol    = var.tcp
   vpc_id      = var.vpc_id
-  target_type = "ip"
+  target_type = var.target_type
 
   tags = {
     Name = "${var.env}-nlb_tg"
   }
 }
 
-resource "aws_lb_target_group" "nlb_tg2" {
+resource "aws_lb_target_group" "nlb_tg_dash" {
   depends_on  = [
     aws_lb.nlb
   ]
   lifecycle {
     create_before_destroy = true
   }
-  name        = "nlb2-${var.env}-tg"
-  port        = 80
-  protocol    = "TCP"
+  name        = "nlb-${var.env}-tg-dash"
+  port        = var.dash_port_target_group
+  protocol    = var.tcp
   vpc_id      = var.vpc_id
-  target_type = "ip"
+  target_type = var.target_type
 
   tags = {
     Name = "${var.env}-nlb2_tg"
   }
 }
 
-# Redirect all traffic from the NLB to the target group
-resource "aws_lb_listener" "nlb_listener" {
+resource "aws_lb_listener" "nlb_listener_api" {
   load_balancer_arn = aws_lb.nlb.arn
-  port              = 5050
-  protocol          = "TCP"
+  port              = var.api_port_target_group
+  protocol          = var.tcp
 
   default_action {
-    target_group_arn = aws_lb_target_group.nlb_tg.arn
+    target_group_arn = aws_lb_target_group.nlb_tg_api.arn
     type             = "forward"
   }
   tags = {
-    Name = "${var.env}-nlb_listener"
+    Name = "${var.env}-nlb_listener_api"
   }
 }
 
-resource "aws_lb_listener" "nlb_listener2" {
+resource "aws_lb_listener" "nlb_listener_dash" {
   load_balancer_arn = aws_lb.nlb.arn
-  port              = 80
-  protocol          = "TCP"
+  port              = var.dash_port_target_group
+  protocol          = var.tcp
 
   default_action {
-    target_group_arn = aws_lb_target_group.nlb_tg2.arn
+    target_group_arn = aws_lb_target_group.nlb_tg_dash.arn
     type             = "forward"
   }
   tags = {
-    Name = "${var.env}-nlb_listener2"
+    Name = "${var.env}-nlb_listener_dash"
   }
 }
