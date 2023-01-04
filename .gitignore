@@ -9,3 +9,4 @@ viz/aws/credentials
 .hcl
 .terraform/
 .csvс
+.terraform.lock.hcl

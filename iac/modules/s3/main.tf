@@ -4,6 +4,9 @@ provider "aws" {
 
 resource "aws_s3_bucket" "carsdatascraperapidash1" {
   bucket = "carsdatascraperapidash1"
+  tags = {
+    Name = "${var.env}-backend_subnet"
+  }
 }
 
 resource "aws_s3_bucket_acl" "carsdatascraperapidash1" {

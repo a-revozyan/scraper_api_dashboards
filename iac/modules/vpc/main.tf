@@ -37,7 +37,7 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-resource "aws_eip" "nat_gtw_eip" {
+resource "aws_eip" "nat_gtw_eip1" {
   depends_on = [
     aws_internet_gateway.igw
   ]
@@ -49,10 +49,10 @@ resource "aws_eip" "nat_gtw_eip" {
 
 resource "aws_nat_gateway" "nat_gtw" {
   depends_on = [
-    aws_eip.nat_gtw_eip
+    aws_eip.nat_gtw_eip1
   ]
-  allocation_id = aws_eip.nat_gtw_eip.id
-  subnet_id     = aws_subnet.backend_subnet.*.id[0]
+  allocation_id = aws_eip.nat_gtw_eip1.id
+  subnet_id     = aws_subnet.frontend_subnet.*.id[0]
   tags = {
     Name = "${var.env}-nat_gtw"
   }
@@ -73,7 +73,8 @@ resource "aws_route_table" "route_to_natgtw_backend" {
   vpc_id = aws_vpc.vpc.id
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw.id
+    gateway_id = aws_nat_gateway.nat_gtw.id
+#    gateway_id = aws_internet_gateway.igw.id
   }
   tags = {
     Name = "${var.env}-route_to_nat_gateway"
@@ -91,3 +92,4 @@ resource "aws_route_table_association" "backend_association_subnet" {
   subnet_id      = element(aws_subnet.backend_subnet.*.id, count.index)
   route_table_id = aws_route_table.route_to_natgtw_backend.id
 }
+

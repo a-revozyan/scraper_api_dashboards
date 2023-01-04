@@ -12,3 +12,8 @@ output "frontend-subnet_ids" {
   description = "frontend subnets' ids"
   value       = coalescelist(aws_subnet.frontend_subnet.*.id)
 }
+
+output "vpc_id" {
+  description = "VPC ID"
+  value = aws_vpc.vpc.id
+}
