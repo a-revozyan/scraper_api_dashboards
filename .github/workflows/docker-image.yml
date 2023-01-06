@@ -56,7 +56,7 @@ jobs:
         ECR_REPOSITORY: dash_repository
         IMAGE_TAG: latest
       run: |
-        cd ./api
+        cd ./dash
         docker build -t dash_repository .
         docker tag dash_repository:latest 094324491160.dkr.ecr.us-east-2.amazonaws.com/dash_repository:latest
         docker push 094324491160.dkr.ecr.us-east-2.amazonaws.com/dash_repository:latest
