@@ -13,6 +13,3 @@ app.add_url_rule('/api/csv/', view_func=csv_downloads, methods=['GET'])
 
 if __name__ == '__main__':
     app.run(port=5050, host='0.0.0.0')
-
-# if __name__ == '__main__':
-#     app.run(debug=True, port=5050, host='0.0.0.0')

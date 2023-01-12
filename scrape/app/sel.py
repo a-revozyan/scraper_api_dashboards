@@ -10,6 +10,7 @@ from vars import *
 AVTOELON_MAIN_LIST = [] # this list is used for collecting urls of ads of https://avtoelon.uz
 OLX_LIST = []           # this list is used for collecting temp dict which is build based on elements of the OLX_MAIN_LIST
 AVTOELON_LIST = []      # this list is used for collecting temp dict which is build based on elements of the AVTOELON_MAIN_LIST
+FINAL_LIST_URLS = []    # this list will contain the urls which are new in comparison with url column of csv file
 DOLLAR = 11550          # Rate Uzb
 
 
@@ -26,7 +27,6 @@ class Sel:
         self.options.add_argument('--disable-dev-shm-usage')
         self.chrome_driver_path = Service(path)
         self.driver = webdriver.Chrome(options=self.options, service=self.chrome_driver_path)
-        self.driver.maximize_window()
         self.model = ''
         self.date = ''
         self.price = ''
@@ -71,12 +71,13 @@ class Sel:
                 self.model = self.model.replace('позиция', 'position')
             elif 'евро' in self.model:
                 self.model = self.model.replace('евро', 'euro')
+            elif 'газ-бензин' in self.model:
+                self.model = self.model.replace('газ-бензин', 'gas-gasoline')
             count = 1
             list_of_text = []
             while True:
                 try:
-                    self.driver.find_element(By.XPATH,
-                                             f'/html/body/div[1]/div[1]/main/div/div[2]/section/div/div[1]/div[1]/div/dl/dt[{count}]')
+                    self.driver.find_element(By.XPATH, f'{AVTOELON_NUMBER_VALUES}[{count}]')
                     count += 1
                 except NoSuchElementException:
                     count = count - 1
@@ -84,26 +85,20 @@ class Sel:
 
             for x in range(2, count):
                 try:
-                    value = self.driver.find_element(By.XPATH, f'/html/body/div[1]/div[1]/main/div/div[2]/section/div/div[1]/div[1]/div/dl/dd[{x}]').text
+                    value = self.driver.find_element(By.XPATH,
+                                                     f'{AVTOELON_LIST_OF_TEXTS}[{x}]').text
                     list_of_text.append(value)
                 except NoSuchElementException:
                     break
-
-            for key, value in car_colors.items():
-                for x in list_of_text:
-                    if key == x:
-                        self.color = value
-
-            for key, value in car_transmission.items():
-                for x in list_of_text:
-                    if key == x:
-                        self.transmission = value
             self.odo = '0'
             for x in list_of_text:
-                if ' км' in x:
+                if x in car_colors:
+                    self.color = car_colors[x]
+                elif x in car_transmission:
+                    self.transmission = car_transmission[x]
+                elif ' км' in x:
                     odo = x.replace(' км', '').replace(' ', '')
                     self.odo = odo
-
             self.year = list_of_text[0]
 
             temp = {
