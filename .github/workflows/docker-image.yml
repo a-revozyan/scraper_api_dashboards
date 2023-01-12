@@ -1,0 +1,88 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+
+  build_API:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+    - name: Build, tag, and push image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: api_repository
+        IMAGE_TAG: latest
+      run: |
+        cd ./api
+        docker build -t api_repository .
+        docker tag api_repository:latest 094324491160.dkr.ecr.us-east-2.amazonaws.com/api_repository:latest
+        docker push 094324491160.dkr.ecr.us-east-2.amazonaws.com/api_repository:latest
+
+  build_DASH:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+    - name: Build, tag, and push image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: dash_repository
+        IMAGE_TAG: latest
+      run: |
+        cd ./dashboards
+        docker build -t dash_repository .
+        docker tag dash_repository:latest 094324491160.dkr.ecr.us-east-2.amazonaws.com/dash_repository:latest
+        docker push 094324491160.dkr.ecr.us-east-2.amazonaws.com/dash_repository:latest
+        
+  build_SEL:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+    - name: Build, tag, and push image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: sel_repository
+        IMAGE_TAG: latest
+      run: |
+        cd ./scrape
+        docker build -t sel_repository .
+        docker tag sel_repository:latest 094324491160.dkr.ecr.us-east-2.amazonaws.com/sel_repository:latest
+        docker push 094324491160.dkr.ecr.us-east-2.amazonaws.com/sel_repository:latest
