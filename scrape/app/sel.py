@@ -3,30 +3,28 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from datetime import datetime
-from dicts import car_months, car_colors, car_status, car_owner, car_transmission
+from dicts import car_months, car_colors, car_transmission
 from vars import *
-
-
-AVTOELON_MAIN_LIST = [] # this list is used for collecting urls of ads of https://avtoelon.uz
-OLX_LIST = []           # this list is used for collecting temp dict which is build based on elements of the OLX_MAIN_LIST
-AVTOELON_LIST = []      # this list is used for collecting temp dict which is build based on elements of the AVTOELON_MAIN_LIST
-FINAL_LIST_URLS = []    # this list will contain the urls which are new in comparison with url column of csv file
-DOLLAR = 11550          # Rate Uzb
 
 
 class Sel:
 
+    __slots__ = ['__options', '__chrome_driver_path', '__driver', 'model', 'date', 'price', 'owner', 'year', 'color',
+                 'transmission', 'odo', 'counts']
+
+    AVTOELON_MAIN_LIST = []  # this list is used for collecting urls of ads of https://avtoelon.uz
+    AVTOELON_LIST = []  # this list is used for collecting temp dict which is build based on elements of the AVTOELON_MAIN_LIST
 
     def __init__(self, path):
         """Initialization selenium instance"""
-        self.options = webdriver.ChromeOptions()
-        self.options.add_experimental_option("detach", False)
-        self.options.add_argument("--headless")
-        self.options.add_argument("--disable-gpu")
-        self.options.add_argument("--no-sandbox")
-        self.options.add_argument('--disable-dev-shm-usage')
-        self.chrome_driver_path = Service(path)
-        self.driver = webdriver.Chrome(options=self.options, service=self.chrome_driver_path)
+        self.__options = webdriver.ChromeOptions()
+        self.__options.add_experimental_option("detach", False)
+        self.__options.add_argument("--headless")
+        self.__options.add_argument("--disable-gpu")
+        self.__options.add_argument("--no-sandbox")
+        self.__options.add_argument('--disable-dev-shm-usage')
+        self.__chrome_driver_path = Service(path)
+        self.__driver = webdriver.Chrome(options=self.__options, service=self.__chrome_driver_path)
         self.model = ''
         self.date = ''
         self.price = ''
@@ -38,35 +36,35 @@ class Sel:
 
     def get_counts(self, url, xpath):
         """Collecting the biggest number of pages of the default page 'olx.uz', using as last number of 'counts' var"""
-        self.driver.get(url)
-        self.driver.implicitly_wait(15)                                  # waiting till url is loading                                         # if avtoelon.uz in url
+        self.__driver.get(url)
+        self.__driver.implicitly_wait(15)                                  # waiting till url is loading                                         # if avtoelon.uz in url
         # self.counts = int(1)
         try:
-            self.counts = self.driver.find_element(By.XPATH, xpath) # getting the last number of pages
+            self.counts = self.__driver.find_element(By.XPATH, xpath) # getting the last number of pages
             self.counts = int(self.counts.text)                     # this variable is used in for loop in app.py
         except NoSuchElementException:
             self.counts = int(5)                                    # if less than 10 pages, selecting just 5 pages
 
     def get_urls(self, url):
         """Collecting all 'hrefs' from each page, adding these hrefs to the 'MAIN_LIST', which will be used for the next parsing"""
-        self.driver.get(url)
-        self.driver.implicitly_wait(5)                                                  # waiting till url is loading                                     # if olx.uz in url
-        elements = self.driver.find_elements(By.CSS_SELECTOR, 'span.a-el-info-title a') # getting hrefs by CSS class
+        self.__driver.get(url)
+        self.__driver.implicitly_wait(5)                                                  # waiting till url is loading                                     # if olx.uz in url
+        elements = self.__driver.find_elements(By.CSS_SELECTOR, 'span.a-el-info-title a') # getting hrefs by CSS class
         for x in elements:
-            AVTOELON_MAIN_LIST.append(x.get_attribute('href'))                          # added to the AVTOELON_MAIN_LIST links
+            Sel.AVTOELON_MAIN_LIST.append(x.get_attribute('href'))                          # added to the AVTOELON_MAIN_LIST links
 
     def get_values(self, url):
         try:
-            self.driver.get(url)
-            self.driver.implicitly_wait(5)                                                 # waiting till url is loading
-            self.date = self.driver.find_element(By.XPATH, AVTOELON_DATE).text[12:].replace(" ", "")
+            self.__driver.get(url)
+            self.__driver.implicitly_wait(5)                                                 # waiting till url is loading
+            self.date = self.__driver.find_element(By.XPATH, AVTOELON_DATE).text[12:].replace(" ", "")
             for key, value in car_months.items():
                 if key in self.date:
                     now = datetime.now().strftime('%Y')
                     self.date = self.date.replace(key, value) + now
-            self.price = self.driver.find_element(By.XPATH, AVTOELON_PRICE).text[:-5].replace(" ", "").replace("~", "")
+            self.price = self.__driver.find_element(By.XPATH, AVTOELON_PRICE).text[:-5].replace(" ", "").replace("~", "")
             self.owner = 'not_in_avtoelon'
-            self.model = self.driver.find_element(By.XPATH, AVTOELON_MODEL).text.lower()
+            self.model = self.__driver.find_element(By.XPATH, AVTOELON_MODEL).text.lower()
             if 'позиция' in self.model:
                 self.model = self.model.replace('позиция', 'position')
             elif 'евро' in self.model:
@@ -77,7 +75,7 @@ class Sel:
             list_of_text = []
             while True:
                 try:
-                    self.driver.find_element(By.XPATH, f'{AVTOELON_NUMBER_VALUES}[{count}]')
+                    self.__driver.find_element(By.XPATH, f'{AVTOELON_NUMBER_VALUES}[{count}]')
                     count += 1
                 except NoSuchElementException:
                     count = count - 1
@@ -85,7 +83,7 @@ class Sel:
 
             for x in range(2, count):
                 try:
-                    value = self.driver.find_element(By.XPATH,
+                    value = self.__driver.find_element(By.XPATH,
                                                      f'{AVTOELON_LIST_OF_TEXTS}[{x}]').text
                     list_of_text.append(value)
                 except NoSuchElementException:
@@ -113,6 +111,6 @@ class Sel:
                 "url": f"{url}"
             }
 
-            AVTOELON_LIST.append(temp)
+            Sel.AVTOELON_LIST.append(temp)
         except:
             pass
