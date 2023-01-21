@@ -34,6 +34,12 @@ class Sel:
         self.transmission = ''
         self.odo = ''
 
+    def __repr__(self):
+        return f'The class of Selenium - scrape'
+
+    def __str__(self):
+        return f'The class of Selenium - scrape'
+
     def get_counts(self, url, xpath):
         """Collecting the biggest number of pages of the default page 'olx.uz', using as last number of 'counts' var"""
         self.__driver.get(url)
@@ -44,6 +50,7 @@ class Sel:
             self.counts = int(self.counts.text)                     # this variable is used in for loop in app.py
         except NoSuchElementException:
             self.counts = int(5)                                    # if less than 10 pages, selecting just 5 pages
+        return self.counts
 
     def get_urls(self, url):
         """Collecting all 'hrefs' from each page, adding these hrefs to the 'MAIN_LIST', which will be used for the next parsing"""
@@ -110,7 +117,6 @@ class Sel:
                 "odo": f"{self.odo}",
                 "url": f"{url}"
             }
-
             Sel.AVTOELON_LIST.append(temp)
         except:
             pass
