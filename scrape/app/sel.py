@@ -118,5 +118,5 @@ class Sel:
                 "url": f"{url}"
             }
             Sel.AVTOELON_LIST.append(temp)
-        except:
+        except Exception:
             pass

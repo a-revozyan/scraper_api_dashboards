@@ -2,7 +2,8 @@ import pandas as pd
 import boto3, os
 
 s3_client = boto3.client('s3')
-S3_BUCKET = 'carsdatascraperapidash1'
+# S3_BUCKET = 'carsdatascraperapidash1'
+S3_BUCKET = 'datacollectbucketcrawler1'
 SOURCE = 'avtoelon.uz'
 
 

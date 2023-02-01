@@ -3,7 +3,8 @@ import flask
 
 
 s3_client = boto3.client('s3')
-S3_BUCKET = 'carsdatascraperapidash1'
+# S3_BUCKET = 'carsdatascraperapidash1'
+S3_BUCKET = 'datacollectbucketcrawler1'
 AVTOELON = 'avtoelon.uz'
 
 def csv_downloads():
